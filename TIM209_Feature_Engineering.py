@@ -5,12 +5,12 @@ import os
 
 
 def process_sheets_no_index(sheets, column, start_row, end_row, filename):
-    print len(sheets)
+    print (len(sheets))
     i = 1
     for sheet in sheets:
         # print sheet
         outfile = open(filename, 'a+')
-        print "File Opened."
+        print ("File Opened.")
         if os.stat(filename).st_size == 0:
             for rows in sheet[str(str(column) + str(start_row)):str(str(column) + str(end_row))]:
                 for cell in rows:
@@ -42,18 +42,18 @@ def process_sheets_no_index(sheets, column, start_row, end_row, filename):
                 else:
                     break
         outfile.close()
-        print "File Closed"
+        print ("File Closed")
         i += 1
 
 
 def process_sheets_failed_banks_no_index(sheets, columns, start_row, end_row, filename):
-    print len(sheets)
+    print (len(sheets))
     i = 1
     k = 0
     for sheet in sheets:
         # print sheet
         outfile = open(filename, 'a+')
-        print "File Opened."
+        print ("File opened")
         count = start_row
         if os.stat(filename).st_size == 0:
             for column in columns:
@@ -89,7 +89,7 @@ def process_sheets_failed_banks_no_index(sheets, columns, start_row, end_row, fi
                 else:
                     break
         outfile.close()
-        print "File Closed"
+        print ("File Closed")
         i += 1
 
 
@@ -133,7 +133,7 @@ def feature_engineering(list_of_list):
 
 def write_list_to_libsvm_file(list_of_list, filename, label):
     outfile = open(filename, 'a+')
-    print "File Opened."
+    print ("File Opened.")
 
     for list in list_of_list:
         i = 1
@@ -173,17 +173,17 @@ if __name__ == '__main__':
     sheets = base.read_file(data_file)
     sheets2 = base.read_file(data_file2)
     sheets_total = sheets + sheets2
-    print len(sheets_total)
+    print (len(sheets_total))
 
     columns = ['AK', 'AI', 'BK', 'AM', 'AO', 'BG', 'AJ', 'BC', 'AJ', 'AR', 'AF', 'AY', 'AK', 'AJ', 'AB', 'BE', 'AN',
               'AJ', 'AJ', 'AC', 'AI', 'AN', 'AV', 'AJ', 'AS', 'AL', 'AM', 'AP', 'AD', 'AP', 'AR', 'AQ', 'AI', 'AM']
 
     label_failed = 0
     label_active = 1
-    failed_file = "failed_banks_space_delimited.txt"
+    failed_file = "failed_banks_1col_space_delimited.txt"
     process_sheets_failed_banks_no_index(sheets_total, columns, 3, 36, failed_file)
 
-    active_file = "active_banks_space_delimited.txt"
+    active_file = "active_banks_AI_space_delimited.txt"
     column_used_active_banks = 'AI'
     process_sheets_no_index(sheets_total, column_used_active_banks, 38, 167, active_file)
     failed_list = store_txt_file_as_list(failed_file)

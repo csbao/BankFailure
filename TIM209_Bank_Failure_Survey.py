@@ -2,6 +2,7 @@
 
 import TIM209_Feature_Engineering as fe
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier
 import nltk
 
 
@@ -22,6 +23,14 @@ def divide_into_training_test(list_of_list, label):
 
     return X_training_data, y_training_labels, X_test_data, y_test_labels
 
+def gradient_booster(X_training_data, y_training_labels, n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0):
+     return GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate,
+                                       max_depth=max_depth, random_state=random_state).fit(X_training_data,
+                                                                                           y_training_labels)
+
+def perceptron(X_training_data, y_training_labels, solver='sgd', alpha=1e-6, hidden_layer_sizes=(5,2), random_state=1):
+    return MLPClassifier(solver=solver, alpha=alpha, hidden_layer_sizes=hidden_layer_sizes,
+                         random_state=random_state, max_iter=2000).fit(X_training_data, y_training_labels)
 
 if __name__ == '__main__':
     failed_file = "failed_banks_1col_space_delimited.txt"
@@ -58,9 +67,12 @@ if __name__ == '__main__':
     X_test_data = X_test_data + temp_X_test_data
     y_training_labels = y_training_labels + temp_y_training_labels
     y_test_labels = y_test_labels + temp_y_test_labels
-
-    classifier = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
-                                     max_depth = 1, random_state = 0).fit(X_training_data, y_training_labels)
+    #
+    # classifier = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
+    #                                  max_depth = 1, random_state = 0).fit(X_training_data, y_training_labels)
+    classifier = perceptron(X_training_data=X_training_data, y_training_labels=y_training_labels)
+    # classifier = gradient_booster(X_training_data=X_training_data, y_training_labels=y_training_labels)
+    # print(type(classifier))
     acc = classifier.score(X_test_data, y_test_labels)
     print("Accuracy = % .4f\n" % acc)
     # print(classifier.feature_importances_)

@@ -10,25 +10,25 @@ def read_file(filename):
     sheetnames = vals1.get_sheet_names()
     i = 0
     # print sheetnames
-    print len(sheetnames)
+    print (len(sheetnames))
     sheets = [None] * len(sheetnames)
     for name in sheetnames:
-        print str(i + 1), ". ", name
+        print (str(i + 1), ". ", name)
         sheets[i] = vals1.get_sheet_by_name(name)
         # print sheets[i]
         i += 1
 
-    print len(sheets)
+    print (len(sheets))
     return sheets
 
 
 def process_sheets(sheets, column, start_row, end_row, filename, label):
-    print len(sheets)
+    print (len(sheets))
     i = 1
     for sheet in sheets:
         # print sheet
         outfile = open(filename, 'a+')
-        print "File Opened."
+        print ("File Opened.")
         if os.stat(filename).st_size == 0:
             # with open(filename, 'w') as outfile:
             #     print "File Opened."
@@ -63,18 +63,18 @@ def process_sheets(sheets, column, start_row, end_row, filename, label):
                 else:
                     break
         outfile.close()
-        print "File Closed"
+        print ("File closed")
         i += 1
 
 
 def process_sheets_failed_banks(sheets, columns, start_row, end_row, filename, label):
-    print len(sheets)
+    print (len(sheets))
     i = 1
     k = 0
     for sheet in sheets:
         # print sheet
         outfile = open(filename, 'a+')
-        print "File Opened."
+        print ("File opened")
         count = start_row
         if os.stat(filename).st_size == 0:
             for column in columns:
@@ -95,7 +95,7 @@ def process_sheets_failed_banks(sheets, columns, start_row, end_row, filename, l
                 else:
                     cells.append(cell_val)
                 count += 1
-                print cell_val
+                print (cell_val)
 
             outfile.seek(0)
             lines = outfile.readlines()
@@ -110,7 +110,7 @@ def process_sheets_failed_banks(sheets, columns, start_row, end_row, filename, l
                 else:
                     break
         outfile.close()
-        print "File Closed"
+        print ("File closed")
         i += 1
 
 
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     sheets = read_file(data_file)
     sheets2 = read_file(data_file2)
     sheets_total = sheets + sheets2
-    print len(sheets_total)
+    print (len(sheets_total))
 
     columns = ['AK', 'AI', 'BK', 'AM', 'AO', 'BG', 'AJ', 'BC', 'AJ', 'AR', 'AF', 'AY', 'AK', 'AJ', 'AB', 'BE', 'AN',
               'AJ', 'AJ', 'AC', 'AI', 'AN', 'AV', 'AJ', 'AS', 'AL', 'AM', 'AP', 'AD', 'AP', 'AR', 'AQ', 'AI', 'AM']
