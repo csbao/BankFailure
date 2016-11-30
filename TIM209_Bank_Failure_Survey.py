@@ -4,6 +4,8 @@ import TIM209_Feature_Engineering as fe
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
 import nltk
+import random
+# from sklearn.metrics import confusion_matrix
 
 
 def divide_into_training_test(list_of_list, label):
@@ -34,10 +36,19 @@ def perceptron(X_training_data, y_training_labels, solver='sgd', alpha=1e-6, hid
 
 if __name__ == '__main__':
     failed_file = "failed_banks_1col_space_delimited.txt"
+    failed_files = ["failed_banks_col1_space_delimited.txt",
+    "failed_banks_col2_space_delimited.txt",
+    "failed_banks_col3_space_delimited.txt",
+    "failed_banks_col4_space_delimited.txt"]
+    failed_list = []
+    for f in failed_files:
+        temp_list = fe.store_txt_file_as_list(f)
+        failed_list = failed_list + temp_list
 
-    active_file = "active_banks_AI_space_delimited.txt"
+    print ("Length of failed_list = ", len(failed_list))
+    # print failed_list
+    active_file = "active_banks_allBut1516_space_delimited.txt"
 
-    failed_list = fe.store_txt_file_as_list(failed_file)
     active_list = fe.store_txt_file_as_list(active_file)
     failed_feature_list_of_list = []
     active_feature_list_of_list = []
@@ -52,16 +63,18 @@ if __name__ == '__main__':
     y_training_labels = []
     y_test_labels = []
     X_training_data, y_training_labels, X_test_data, y_test_labels = \
-        divide_into_training_test(failed_feature_list_of_list, 0)
+        divide_into_training_test(failed_feature_list_of_list, "Failed")
     print(len(X_training_data))
     temp_X_training_data = []
     temp_X_test_data = []
     temp_y_training_labels = []
     temp_y_test_labels = []
+    num_failed = len(failed_feature_list_of_list)
+    ratio = 4
     temp_X_training_data, temp_y_training_labels, temp_X_test_data, temp_y_test_labels = \
-        divide_into_training_test(active_feature_list_of_list, 1)
+        divide_into_training_test(random.sample(active_feature_list_of_list, num_failed * ratio), "Active")
     X_training_data = X_training_data + temp_X_training_data
-    print X_training_data
+    # print X_training_data
     print(len(temp_X_training_data))
     print(len(X_training_data))
     X_test_data = X_test_data + temp_X_test_data
@@ -70,17 +83,24 @@ if __name__ == '__main__':
     #
     # classifier = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
     #                                  max_depth = 1, random_state = 0).fit(X_training_data, y_training_labels)
-    classifier = perceptron(X_training_data=X_training_data, y_training_labels=y_training_labels)
-    # classifier = gradient_booster(X_training_data=X_training_data, y_training_labels=y_training_labels)
+    # classifier = perceptron(X_training_data=X_training_data, y_training_labels=y_training_labels)
+    classifier = gradient_booster(X_training_data=X_training_data, y_training_labels=y_training_labels)
     # print(type(classifier))
     acc = classifier.score(X_test_data, y_test_labels)
+    print ("Number of y_test_labels = ", len(y_test_labels))
     print("Accuracy = % .4f\n" % acc)
     # print(classifier.feature_importances_)
 
-    predicted_labels = classifier.predict(X_test_data)
-    # print(predicted_labels)
+    pred_labels = classifier.predict(X_test_data)
+    predicted_labels = []
+    for label in pred_labels:
+        predicted_labels.append(label)
+
+    print("Number of predicted_labels =", len(predicted_labels))
     # print(y_test_labels)
 
-    print("Confusion Matrix: \n")
+    print("Confusion Matrix: ")
+    # print(confusion_matrix(y_test_labels, predicted_labels), "\n")
     confusion_matrix = nltk.ConfusionMatrix(y_test_labels, predicted_labels)
+
     print(confusion_matrix)
