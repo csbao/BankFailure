@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import TIM209_Feature_Engineering as fe
+from sklearn import svm
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
 import nltk
@@ -25,6 +26,11 @@ def divide_into_training_test(list_of_list, label):
 
     return X_training_data, y_training_labels, X_test_data, y_test_labels
 
+
+def support_vector_machine(X_training_data, y_training_labels, kernel, C, gamma):
+    return svm.SVC(kernel= kernel, gamma=gamma, C=C).fit(X_training_data, y_training_labels)
+
+
 def gradient_booster(X_training_data, y_training_labels, n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0):
      return GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate,
                                        max_depth=max_depth, random_state=random_state).fit(X_training_data,
@@ -44,9 +50,12 @@ if __name__ == '__main__':
     for f in failed_files:
         temp_list = fe.store_txt_file_as_list(f)
         failed_list = failed_list + temp_list
-
+    ########
+    # failed_list = fe.store_txt_file_as_list(failed_file)
+    # active_file = "active_banks_AI_space_delimited.txt"
+    #########
     print ("Length of failed_list = ", len(failed_list))
-    # print failed_list
+
     active_file = "active_banks_allBut1516_space_delimited.txt"
 
     active_list = fe.store_txt_file_as_list(active_file)
@@ -73,18 +82,25 @@ if __name__ == '__main__':
     ratio = 4
     temp_X_training_data, temp_y_training_labels, temp_X_test_data, temp_y_test_labels = \
         divide_into_training_test(random.sample(active_feature_list_of_list, num_failed * ratio), "Active")
+    #########
+    # temp_X_training_data, temp_y_training_labels, temp_X_test_data, temp_y_test_labels = \
+    #     divide_into_training_test(active_feature_list_of_list, "Active")
+    #########
     X_training_data = X_training_data + temp_X_training_data
-    # print X_training_data
+
     print(len(temp_X_training_data))
     print(len(X_training_data))
     X_test_data = X_test_data + temp_X_test_data
     y_training_labels = y_training_labels + temp_y_training_labels
     y_test_labels = y_test_labels + temp_y_test_labels
     #
-    # classifier = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
-    #                                  max_depth = 1, random_state = 0).fit(X_training_data, y_training_labels)
+    kernel = 'rbf'  # SVM kernel, (Gaussian) Radial Basis Function (RBF) Kernel.
+    C = 10.0        # SVM regularization parameter, Cost/penalty.
+    gamma = 1.0     # SVM, area surrounding the decision boundary.
+    classifier = support_vector_machine(X_training_data=X_training_data, y_training_labels=y_training_labels,
+                                        kernel=kernel, C=C, gamma=gamma)
     # classifier = perceptron(X_training_data=X_training_data, y_training_labels=y_training_labels)
-    classifier = gradient_booster(X_training_data=X_training_data, y_training_labels=y_training_labels)
+    # classifier = gradient_booster(X_training_data=X_training_data, y_training_labels=y_training_labels)
     # print(type(classifier))
     acc = classifier.score(X_test_data, y_test_labels)
     print ("Number of y_test_labels = ", len(y_test_labels))
