@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-# import matplotlib.pyplot as plt
-# import numpy as np
-import itertools, os
+import os
 import openpyxl
 
 def read_file(filename):
@@ -13,7 +11,7 @@ def read_file(filename):
     print (len(sheetnames))
     sheets = [None] * len(sheetnames)
     for name in sheetnames:
-        print (str(i + 1), ". ", name)
+        # print (str(i + 1), ". ", name)
         sheets[i] = vals1.get_sheet_by_name(name)
         # print sheets[i]
         i += 1
@@ -28,7 +26,7 @@ def process_sheets(sheets, column, start_row, end_row, filename, label):
     for sheet in sheets:
         # print sheet
         outfile = open(filename, 'a+')
-        print ("File Opened.")
+        print (filename, "File Opened.")
         if os.stat(filename).st_size == 0:
             # with open(filename, 'w') as outfile:
             #     print "File Opened."
@@ -137,6 +135,7 @@ def file_length(filename):
     with open(filename) as f:
         for i, l in enumerate(f):
             pass
+
     return i + 1
 
 
@@ -156,21 +155,17 @@ if __name__ == '__main__':
     label_failed = 0
     label_active = 1
     failed_file = "failed_banks.txt"
-    # process_sheets_failed_banks(sheets_total, columns, 3, 36, failed_file, label_failed)
-    #
-    # active_file = "active_banks.txt"
-    # column_used_active_banks = 'Z'
-    # process_sheets(sheets_total, column_used_active_banks, 38, 167, active_file, label_active)
-    # ##########################################
-    # # I combined the "failed_file" and "active_file" manually,
-    # # and then used it as "data_txtfile" to run the "split_into_training_test" function.
-    # ##########################################
-    # data_txtfile = "banks_Z_1colBeforeFailed.txt"
-    # training_file = "training_data_Z_1col.txt"
-    # test_file = "test_data_Z_1col.txt"
-    # split_into_training_test(data_txtfile, training_file, test_file)
+    process_sheets_failed_banks(sheets_total, columns, 3, 36, failed_file, label_failed)
 
-    print(file_length('/Users/bjea/UCSC/CMPS242_Machine_Learning/ML_Project/cmps-242-project/test_date_friendly_list.json'))
-    print(file_length('/Users/bjea/UCSC/CMPS242_Machine_Learning/ML_Project/cmps-242-project/test_not_date_friendly_list.json'))
-    print(file_length('/Users/bjea/UCSC/CMPS242_Machine_Learning/ML_Project/cmps-242-project/train_date_friendly_list.json'))
-    print(file_length('/Users/bjea/UCSC/CMPS242_Machine_Learning/ML_Project/cmps-242-project/train_not_date_friendly_list.json'))
+    active_file = "active_banks.txt"
+    column_used_active_banks = 'Z'
+    process_sheets(sheets_total, column_used_active_banks, 38, 167, active_file, label_active)
+    ##########################################
+    # I combined the "failed_file" and "active_file" manually,
+    # and then used it as "data_txtfile" to run the "split_into_training_test" function.
+    ##########################################
+    data_txtfile = "banks_Z_1colBeforeFailed.txt"
+    training_file = "training_data_Z_1col.txt"
+    test_file = "test_data_Z_1col.txt"
+    split_into_training_test(data_txtfile, training_file, test_file)
+
